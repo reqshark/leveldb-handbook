@@ -8,19 +8,57 @@ This document covers using leveldb in [node.js](http://nodejs.org).
 
 # introduction
 
-The best thing about leveldb is its modular nature.
+The best thing about using leveldb in node is the modular nature of the core
+library and the [ecosystem of abstractions](https://npmjs.org)
+that have been built up around that core interface.
 
 From a small set of low-level primitives, you can find or build abstractions for
-nearly any kind of problem. But instead of baking in support for common
-features, leveldb takes a step back and 
+nearly any kind of problem. This is very different from almost every other
+popular database, where the core database server ships with many features that
+handle common use-cases. Those convenient built-in features can be good for
+normalizing quality, but they make it harder for an ecosystem to get off the
+ground.
 
-trivial to extend in novel ways.
+Running a big, well-known database service has an ineffable heaviness to it:
+they bind to a custom port and the service must already be running before your
+program will work. Worse, if you install the database from a package manager
+like apt-get, the database will be auto-daemonized and put into your init
+scripts. Good luck hunting down where it decided to put the configuration file.
 
+If you write a program that requires an SQL or MongoDB or
+Couch or whatever database, you've got to tell other people who will want to run
+your program that "oh by the way you've got to set up a database and here the
+place for you to put all your configuration for the host, port, username,
+password, database name, whatever." And then you'll invariably want to run
+multiple applications on the same database because setting up a database in the
+first place is such a production, so you'll need a scheme for partitioning data
+so that applications don't interfere. Some popular databases have built-in
+features for that and some don't, but there is a kind of tension just the
+same.
 
+LevelDB is different. You just do:
 
+```
+npm install level
+```
 
-If you need the database to perform a task that hasn't been done yet, just
-publish your own abstractions.
+and then in your program, you can just:
+
+```
+var level = require('level');
+var db = level('./beep.db');
+```
+
+and now `db` is ready to go hosting a database out of `./beep.db`.
+
+Because we installed `level` with npm, we can write programs that add `level` as
+a dependency and then `level` will be installed automatically, without the user
+even caring or particularly noticing that leveldb is being used behind the
+scenes. Now many of the dependency-management techniques of modules that apply
+to npm packages can be applied to database abstractions!
+
+There are hundreds of packages you can use on top of leveldb to do all kinds of
+things. This document covers a few of them in later chapters.
 
 # get started
 
